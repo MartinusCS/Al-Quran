@@ -9,14 +9,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.ArrayList
 
-/**
- * Created by Azhar Rivaldi on 18-05-2021
- * Youtube Channel : https://bit.ly/2PJMowZ
- * Github : https://github.com/AzharRivaldi
- * Twitter : https://twitter.com/azharrvldi_
- * Instagram : https://www.instagram.com/azhardvls_
- * Linkedin : https://www.linkedin.com/in/azhar-rivaldi
- */
 
 interface ApiInterface {
     @GET("/99c279bb173a6e28359c/data")

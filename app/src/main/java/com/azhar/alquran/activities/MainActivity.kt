@@ -7,17 +7,10 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.azhar.alquran.R
-import com.azhar.alquran.adapter.MainAdapter
 import com.azhar.alquran.fragment.FragmentJadwalSholat.Companion.newInstance
-import com.azhar.alquran.model.main.ModelSurah
-import com.azhar.alquran.viewmodel.SurahViewModel
 import im.delight.android.location.SimpleLocation
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
@@ -32,9 +25,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var strDate: String
     lateinit var strDateNow: String
     lateinit var simpleLocation: SimpleLocation
-    lateinit var mainAdapter: MainAdapter
+
     lateinit var progressDialog: ProgressDialog
-    lateinit var surahViewModel: SurahViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setPermission()
         setLocation()
         setCurrentLocation()
-        setViewModel()
+
     }
 
     private fun setInitLayout() {
@@ -56,13 +49,6 @@ class MainActivity : AppCompatActivity() {
         strDate = DateFormat.format("EEEE", dateNow) as String
         strDateNow = DateFormat.format("d MMMM yyyy", dateNow) as String
 
-        tvToday.setText("$strDate,")
-        tvDate.setText(strDateNow)
-
-        mainAdapter = MainAdapter(this)
-        rvSurah.setHasFixedSize(true)
-        rvSurah.setLayoutManager(LinearLayoutManager(this))
-        rvSurah.setAdapter(mainAdapter)
 
         val jadwalSholat = newInstance("Jadwal Sholat")
         layoutTime.setOnClickListener {
@@ -71,14 +57,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        layoutMosque.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@MainActivity,
-                    MasjidActivity::class.java
-                )
-            )
-        }
+
     }
 
     private fun setLocation() {
@@ -101,29 +80,14 @@ class MainActivity : AppCompatActivity() {
             val addressList = geocoder.getFromLocation(strCurrentLatitude, strCurrentLongitude, 1)
             if (addressList != null && addressList.size > 0) {
                 val strCurrentLocation = addressList[0].locality
-                tvLocation.text = strCurrentLocation
+                //tvLocation.text = strCurrentLocation
             }
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
-    private fun setViewModel() {
-        progressDialog.show()
-        surahViewModel = ViewModelProvider(this, NewInstanceFactory()).get(SurahViewModel::class.java)
-        surahViewModel.setSurah()
-        surahViewModel.getSurah()
-            .observe(this, { modelSurah: ArrayList<ModelSurah> ->
-                if (modelSurah.size != 0) {
-                    mainAdapter.setAdapter(modelSurah)
-                    progressDialog.dismiss()
-                } else {
-                    Toast.makeText(this, "Data Tidak Ditemukan!", Toast.LENGTH_SHORT).show()
-                    progressDialog.dismiss()
-                }
-                progressDialog.dismiss()
-            })
-    }
+
 
     private fun setPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -152,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQ_PERMISSION && resultCode == RESULT_OK) {
 
             //load data
-            setViewModel()
+
         }
     }
 }
